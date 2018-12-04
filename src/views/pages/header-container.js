@@ -3,14 +3,25 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { userOperations } from '../../state/ducks/user';
+import Header from '../layout/header';
 
-const WrapperPage = ({ children }) => {
-  return (
-    <div className="main-view">
-      { children }
-    </div>
-  );
-};
+class HeaderContainer extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  componentDidMount() {
+    const { actions } = this.props;
+    actions.setUserInitial();
+  }
+
+  render() {
+    const { userId } = this.props;
+    return (
+      <Header userId={userId} />
+    );
+  }
+}
 
 const mapStateToProps = (state) => ({
   userId: state.user.userId,
@@ -19,17 +30,14 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => {
   return {
     actions: bindActionCreators({
-      setUser: userOperations.setUserInitial,
+      setUserInitial: userOperations.setUserInitial,
     }, dispatch)
   };
 };
 
-WrapperPage.propTypes = {
+HeaderContainer.propTypes = {
   actions: PropTypes.object,
-  children: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node
-  ]).isRequired
+  userId: PropTypes.string,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(WrapperPage);
+export default connect(mapStateToProps, mapDispatchToProps)(HeaderContainer);

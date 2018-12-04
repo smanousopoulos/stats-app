@@ -1,8 +1,9 @@
 import React, { Fragment } from 'react';
 import { Provider } from 'react-redux';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
-import createAppStore from '../state';
-import { Header, Sidebar, MainView } from './layout/';
+import createAppStore from '../state/store';
+import { Sidebar, MainView } from './layout/';
+import { HeaderContainer } from './pages';
 import CoursesList from './components/courses-list';
 import routes from './routes';
 import courses from '../data/courses';
@@ -13,7 +14,7 @@ const App = () => (
       <BrowserRouter>
         <Fragment>
 
-          <Header />
+          <HeaderContainer />
 
           <div className="view-container">
             <Sidebar>
@@ -32,7 +33,6 @@ const App = () => (
                 <Redirect to="/" />
               </Switch>
             </MainView>
-
           </div>
         </Fragment>
       </BrowserRouter>
