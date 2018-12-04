@@ -1,6 +1,8 @@
 # Stats frontend app
 
-A frontend SPA to display trivia questions and gather/display statistics
+A frontend SPA to display trivia questions and gather/display statistics.
+
+Using the [re-ducks](https://github.com/alexnm/re-ducks) structure.
 
 ## Run locally
 
