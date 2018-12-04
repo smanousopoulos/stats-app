@@ -1,0 +1,14 @@
+.view-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.sidebar {
+  flex-basis: 200px;
+  flex-grow: 0;
+}
+
+.main-view {
+  flex-grow: 1;
+  padding: 30px 50px;
+}

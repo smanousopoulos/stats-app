@@ -1,0 +1,23 @@
+.spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, 0);
+  text-align: center;
+}
+
+.new-session-prompt {
+  text-align: center;
+
+  button {
+    margin-top: 20px;
+  }
+}
+
+.new-session-form {
+}
+
+.course-aggregate {
+  padding: 40px;
+  margin-top: 50px;
+}
