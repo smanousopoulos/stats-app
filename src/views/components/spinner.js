@@ -1,8 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Spinner = () => {
-  return <div />;
+const Spinner = (props) => {
+  return (
+    <div>
+      {
+        props.loading
+        && (
+          <div className="spinner">
+            <i className="fa fa-spinner fa-spin fa-4x fa-fw"/>
+          </div>
+        )
+      }
+    </div>
+  );
 };
 
 Spinner.propTypes = {

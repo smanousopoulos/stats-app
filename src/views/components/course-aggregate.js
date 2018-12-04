@@ -1,8 +1,25 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { ListGroup, ListGroupItem } from 'reactstrap';
 
-const CourseAggregateDisplay = () => {
-  return <div />;
+const CourseAggregateDisplay = (props) => {
+  const { values } = props;
+  return values && (
+    <div className="course-aggregate">
+      <h3>Course statistics</h3>
+      <ListGroup>
+        <ListGroupItem>
+          <b>Total modules:</b> { values.totalModulesStudied }
+        </ListGroupItem>
+        <ListGroupItem>
+          <b>Average score:</b> { values.averageScore }
+        </ListGroupItem>
+        <ListGroupItem>
+          <b>Time spent:</b> { values.timeStudied }
+        </ListGroupItem>
+      </ListGroup>
+    </div>
+  ) || <div />;
 };
 
 CourseAggregateDisplay.propTypes = {

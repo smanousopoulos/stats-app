@@ -1,8 +1,33 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Button } from 'reactstrap';
+import Question from './question';
 
-const QuestionsList = () => {
-  return <div />;
+const QuestionsList = (props) => {
+  const { questions, onQuestionAnswered, onComplete } = props;
+  return (
+    <div className="questions-list">
+      <div>
+        {
+          questions.map(question => (
+            <Question
+              key={question.id}
+              question={question.question}
+              selected={question.selected}
+              answers={question.answers}
+              onSelect={(value) => { onQuestionAnswered(question.id, value); }}
+            />
+          ))
+        }
+      </div>
+      <Button
+        color="primary"
+        onClick={() => onComplete()}
+      >
+        Submit
+      </Button>
+    </div>
+  );
 };
 
 QuestionsList.propTypes = {
