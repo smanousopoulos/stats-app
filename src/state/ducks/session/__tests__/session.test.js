@@ -342,7 +342,13 @@ describe('Session reducer', () => {
     };
 
     it('should reset the session', () => {
-      expect(reducer(initialState, resetSessionAction)).toEqual(initialState);
+      expect(reducer(initialState, resetSessionAction)).toEqual({
+        questionsNumber: 0,
+        difficulty: 'easy',
+        questions: [],
+        score: 0,
+        timeElapsed: 0,
+      });
     });
   });
 });
