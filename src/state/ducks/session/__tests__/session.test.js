@@ -1,9 +1,11 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import fetchMock from 'fetch-mock';
 import * as actions from '../actions';
 import * as operations from '../operations';
 import * as types from '../types';
 import reducer from '../reducers';
+import uuidv4 from "uuid/v4";
 
 const dummyQuestions = [
   {
@@ -353,3 +355,98 @@ describe('Session reducer', () => {
   });
 });
 
+
+const middlewares = [thunk];
+const mockStore = configureMockStore(middlewares);
+
+describe('Session operations', () => {
+  describe('Fetch questions', () => {
+    describe('when opentdb service responds as expected', () => {
+      const results = [
+        {
+          category: "General Knowledge",
+          difficulty: "easy",
+          question: "Who...",
+          correct_answer: "False",
+          incorrect_answers: [
+            "True"
+          ]
+        },
+        {
+          category: "General Knowledge",
+          difficulty: "easy",
+          question: "Which...",
+          correct_answer: "Rock Band",
+          incorrect_answers: [
+            "Meat Beat Mania",
+            "Guitar Hero Live",
+            "Dance Dance Revolution"
+          ]
+        },
+      ];
+
+      beforeEach(() => {
+        fetchMock.getOnce('https://opentdb.com/api.php', {
+          headers: {'content-type': 'application/json'},
+          body: {
+            response_code: 0,
+            results
+          },
+        })
+      });
+
+      afterEach(() => {
+        fetchMock.restore()
+      });
+
+      const category = '2';
+      const store = mockStore({
+        session: {
+          questionsNumber: 3,
+          difficulty: 'hard',
+          questions: [],
+        }
+      });
+
+      beforeEach(() => {
+        return store.dispatch(operations.fetchQuestions(category));
+      });
+
+      it('should dispatch SET_QUESTIONS action with fetched questions', () => {
+        expect(store.getActions()).toEqual([{
+          type: types.SET_QUESTIONS,
+          payload: {
+            questions: results
+          }
+        }]);
+      });
+
+      describe('when opentdb service doesn\'t respond as expected', () => {
+        beforeEach(() => {
+          fetchMock.getOnce('https://opentdb.com/api.php', 400);
+        });
+
+        afterEach(() => {
+          fetchMock.restore()
+        });
+
+        const category = '2';
+        const store = mockStore({
+          session: {
+            questionsNumber: 3,
+            difficulty: 'hard',
+            questions: [],
+          }
+        });
+
+        beforeEach(() => {
+          return store.dispatch(operations.fetchQuestions(category));
+        });
+
+        it('should dispatch SET_QUESTIONS action with fetched questions', () => {
+          expect(store.getActions()).toEqual([]);
+        });
+      });
+    });
+  });
+});
