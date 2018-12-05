@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { userOperations } from '../../state/ducks/user';
 import Header from '../layout/header';
+import Spinner from '../components/spinner';
 
 class HeaderContainer extends React.Component {
   constructor(props) {
@@ -16,15 +17,20 @@ class HeaderContainer extends React.Component {
   }
 
   render() {
-    const { userId } = this.props;
+    const { userId, activeRequests } = this.props;
+    const loading = activeRequests > 0;
     return (
-      <Header userId={userId} />
+      <div>
+        <Header userId={userId} />
+        <Spinner loading={loading} />
+      </div>
     );
   }
 }
 
 const mapStateToProps = (state) => ({
   userId: state.user.userId,
+  activeRequests: state.common.activeRequests,
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -38,6 +44,7 @@ const mapDispatchToProps = (dispatch) => {
 HeaderContainer.propTypes = {
   actions: PropTypes.object,
   userId: PropTypes.string,
+  activeRequests: PropTypes.number,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(HeaderContainer);

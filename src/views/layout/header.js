@@ -11,7 +11,7 @@ const Header = ({ userId }) => (
 
     {
       userId != null ? (
-        <span>{userId}</span>
+        <span>user: {userId}</span>
       ) : <div/>
     }
   </Navbar>

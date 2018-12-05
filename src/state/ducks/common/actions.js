@@ -1,19 +1,14 @@
 import * as types from './types';
 
-const setUser = (userId) => ({
-  type: types.SET_USER,
-  payload: {
-    userId
-  },
+const startRequest = () => ({
+  type: types.START_REQUEST,
 });
 
-const resetUser = () => ({
-  type: types.RESET_USER,
+const endRequest = () => ({
+  type: types.END_REQUEST,
 });
 
 export {
-  setUser,
-  resetUser,
   startRequest,
   endRequest,
 };

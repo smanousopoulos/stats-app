@@ -1,12 +1,10 @@
 import reducer from './reducers';
-import * as userOperations from './operations';
-import * as userActions from './actions';
-import * as userTypes from './types';
+import * as commonActions from './actions';
+import * as commonTypes from './types';
 
 export {
-  userActions,
-  userOperations,
-  userTypes,
+  commonActions,
+  commonTypes,
 };
 
 export default reducer;
