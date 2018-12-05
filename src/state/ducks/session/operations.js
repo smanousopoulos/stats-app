@@ -12,13 +12,17 @@ const transformQuestions = (questions) => {
   }));
 };
 
-const fetchQuestions = (category) => (dispatch, getState) => {
-  const { session } = getState();
+const fetchQuestions = (courseId) => (dispatch, getState) => {
+  const { session, course } = getState();
   const { questionsNumber, difficulty } = session;
+  const { courses } = course;
+
+  const matchingCourse = courses.find(course => course.courseId === courseId);
+  const categoryId = matchingCourse && matchingCourse.id;
 
   dispatch(commonActions.startRequest());
 
-  return openTdbService.fetchQuestions(category, questionsNumber, difficulty)
+  return openTdbService.fetchQuestions(categoryId, questionsNumber, difficulty)
     .then((response) => {
       const rawQuestions = response && response.results || [];
       const questions = transformQuestions(rawQuestions);
@@ -33,11 +37,11 @@ const fetchQuestions = (category) => (dispatch, getState) => {
     });
 };
 
-const sendAnswers = (categoryId) => (dispatch, getState) => {
-  const { user, session, course } = getState();
+const sendAnswers = (courseId) => (dispatch, getState) => {
+  const { user, session } = getState();
   const { questions } = session;
-  const { courses } = course;
   const { userId } = user;
+
   const totalScore = questions.reduce((acc, question) => {
     return question.selected === question.correct_answer ? acc + 1 : acc;
   }, 0);
@@ -54,8 +58,6 @@ const sendAnswers = (categoryId) => (dispatch, getState) => {
 
   dispatch(commonActions.startRequest());
 
-  const matchingCourse = courses.find(course => course.id === categoryId);
-  const courseId = matchingCourse && matchingCourse.courseId;
   return statsService.updateSession(userId, courseId, sessionStats)
     .then(() => {
       dispatch(commonActions.endRequest());

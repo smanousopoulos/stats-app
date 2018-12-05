@@ -12,12 +12,12 @@ jest.mock('../../../../services/stats-service', () => ({
   fetchCourseAggregate: jest.fn(),
 }));
 
+const courseId = '2';
 const dummyAggregate = {
   modules: 5,
   score: 3,
   time: 2,
 };
-const courseId = '2';
 
 describe('Course actions', () => {
   describe('Set course aggregate', () => {
@@ -98,7 +98,8 @@ describe('Course operations', () => {
           {
             type: types.SET_COURSE_AGGREGATE,
             payload: {
-              aggregate: dummyAggregate
+              aggregate: dummyAggregate,
+              courseId,
             }
           },
         ]);

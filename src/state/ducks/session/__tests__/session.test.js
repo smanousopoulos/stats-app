@@ -7,6 +7,7 @@ import { commonTypes } from '../../common'
 import reducer from '../reducers';
 import * as openTdbService from '../../../../services/opentdb-service';
 import statsService from '../../../../services/stats-service';
+import { default as staticCourses } from '../../../../data/courses';
 
 jest.mock('uuid/v4', () => () => 'is-a-uuid');
 jest.mock('../../../../services/stats-service', () => ({
@@ -123,7 +124,7 @@ describe('Session reducer', () => {
   });
 
   describe('when handling SET_QUESTIONS_NUMBER', () => {
-    const seQuestionsNumberAction = {
+    const setQuestionsNumberAction = {
       type: types.SET_QUESTIONS_NUMBER,
       payload: {
         questionsNumber: '5',
@@ -136,7 +137,7 @@ describe('Session reducer', () => {
     };
 
     it('should update questions number', () => {
-      expect(reducer(initialState, seQuestionsNumberAction)).toEqual({
+      expect(reducer(initialState, setQuestionsNumberAction)).toEqual({
         difficulty: 'easy',
         questionsNumber: 5,
       });
@@ -350,26 +351,29 @@ describe('Session operations', () => {
   ];
 
   describe('Fetch questions', () => {
+    const courseId = staticCourses[0].courseId;
+
     describe('when opentdb service responds as expected', () => {
 
       beforeEach(() => {
         openTdbService.fetchQuestions.mockImplementation(() => Promise.resolve(({ results })));
       });
-
-      const category = '2';
       const store = mockStore({
         session: {
           questionsNumber: 3,
           difficulty: 'hard',
           questions: [],
-        }
+        },
+        course: {
+          courses: staticCourses
+        },
       });
 
       beforeEach(() => {
-        return store.dispatch(operations.fetchQuestions(category));
+        return store.dispatch(operations.fetchQuestions(courseId));
       });
 
-      it('should dispatch SET_QUESTIONS action with fetched questions', () => {
+      it('should dispatch START_REQUEST, END_REQUEST and SET_QUESTIONS action with fetched questions', () => {
         expect(store.getActions()).toEqual([
           {
             type: commonTypes.START_REQUEST,
@@ -392,20 +396,22 @@ describe('Session operations', () => {
         openTdbService.fetchQuestions.mockImplementation(() => Promise.reject(({ message: 'Internal server error' })));
       });
 
-      const category = '2';
       const store = mockStore({
         session: {
           questionsNumber: 3,
           difficulty: 'hard',
           questions: [],
-        }
+        },
+        course: {
+          courses: staticCourses
+        },
       });
 
       beforeEach(() => {
-        return store.dispatch(operations.fetchQuestions(category));
+        return store.dispatch(operations.fetchQuestions(courseId));
       });
 
-      it('should dispatch SET_QUESTIONS action with fetched questions', () => {
+      it('should only dispatch START_REQUEST, END_REQUEST actions', () => {
         expect(store.getActions()).toEqual([
           {
             type: commonTypes.START_REQUEST,
@@ -419,40 +425,41 @@ describe('Session operations', () => {
   });
 
   describe('Submit answers', () => {
-    describe('when stats service POST to /courses/{courseId} responds as expected', () => {
-      const questions = [
-        {
-          question: "Who...",
-          correct_answer: "False",
-          selected: "True",
-          answers: [
-            "True",
-            "False"
-          ]
-        },
-        {
-          question: "Which...",
-          correct_answer: "Rock Band",
-          selected: "Rock Band",
-          answers: [
-            "Meat Beat Mania",
-            "Guitar Hero Live",
-            "Dance Dance Revolution",
-            "Rock Band",
-          ]
-        },
-        {
-          question: "Where...",
-          correct_answer: "1",
-          answers: [
-            "5",
-            "18",
-            "24",
-            "1",
-          ]
-        },
-      ];
+    const courseId = staticCourses[0].courseId;
+    const questions = [
+      {
+        question: "Who...",
+        correct_answer: "False",
+        selected: "True",
+        answers: [
+          "True",
+          "False"
+        ]
+      },
+      {
+        question: "Which...",
+        correct_answer: "Rock Band",
+        selected: "Rock Band",
+        answers: [
+          "Meat Beat Mania",
+          "Guitar Hero Live",
+          "Dance Dance Revolution",
+          "Rock Band",
+        ]
+      },
+      {
+        question: "Where...",
+        correct_answer: "1",
+        answers: [
+          "5",
+          "18",
+          "24",
+          "1",
+        ]
+      },
+    ];
 
+    describe('when stats service POST to /courses/{courseId} responds as expected', () => {
       const expectedSessionStats = {
         sessionId: 'is-a-uuid',
         totalModulesStudied: 2,
@@ -465,7 +472,6 @@ describe('Session operations', () => {
       });
 
       const userId = 'user-id';
-      const courseId = 'is-a-uuid';
       const category = '2';
 
       const store = mockStore({
@@ -483,7 +489,7 @@ describe('Session operations', () => {
       });
 
       beforeEach(() => {
-        return store.dispatch(operations.sendAnswers(category));
+        return store.dispatch(operations.sendAnswers(courseId));
       });
 
       it('should dispatch START AND END REQUEST actions', () => {
@@ -500,6 +506,45 @@ describe('Session operations', () => {
       it('should call stats service with expected gathered statistics', () => {
         expect(statsService.updateSession).toHaveBeenCalledTimes(1);
         expect(statsService.updateSession).toHaveBeenCalledWith(userId, courseId, expectedSessionStats);
+      });
+    });
+
+    describe('when stats service POST to /courses/{courseId} fails', () => {
+
+      beforeAll(() => {
+        statsService.updateSession.mockImplementation(() => Promise.reject({ message: 'Internal server error '}));
+      });
+
+      const userId = 'user-id';
+      const category = staticCourses[0].id;
+
+      const store = mockStore({
+        session: {
+          questionsNumber: 3,
+          difficulty: 'hard',
+          questions,
+        },
+        user: {
+          userId,
+        },
+        course: {
+          courses: [{ id: category, courseId }]
+        }
+      });
+
+      beforeEach(() => {
+        return store.dispatch(operations.sendAnswers(courseId));
+      });
+
+      it('should dispatch START AND END REQUEST actions', () => {
+        expect(store.getActions()).toEqual([
+          {
+            type: commonTypes.START_REQUEST,
+          },
+          {
+            type: commonTypes.END_REQUEST,
+          },
+        ]);
       });
     });
   });

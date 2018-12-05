@@ -14,7 +14,7 @@ const CoursesList = (props) => {
               <NavLink
                 tag={Link}
                 className="course-link"
-                to={`/${course.id}`}
+                to={`/${course.courseId}`}
               >
                 { course.name }
               </NavLink>
@@ -30,6 +30,7 @@ CoursesList.propTypes = {
   courses: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string,
+      courseId: PropTypes.string,
       name: PropTypes.string
     })
   ).isRequired,

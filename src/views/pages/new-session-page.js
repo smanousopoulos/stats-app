@@ -7,7 +7,6 @@ import NewSessionForm from '../components/new-session-form';
 
 function onCreateSession(props) {
   const courseId = props.match.params.courseId;
-  console.log(courseId);
 
   props.history.push(`/${courseId}/in-progress`);
 }

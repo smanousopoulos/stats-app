@@ -2,15 +2,11 @@ import * as actions from './actions';
 import * as statsService from '../../../services/stats-service';
 import { commonActions } from '../common';
 
-const fetchCourseAggregate = (categoryId) => (dispatch, getState) => { // eslint-disable-line no-unused-vars
-  const { user, course } = getState();
-  const { courses } = course;
+const fetchCourseAggregate = (courseId) => (dispatch, getState) => { // eslint-disable-line no-unused-vars
+  const { user } = getState();
   const { userId } = user;
 
   dispatch(commonActions.startRequest());
-
-  const matchingCourse = courses.find(course => course.id === categoryId);
-  const courseId = matchingCourse && matchingCourse.courseId;
 
   return statsService.fetchCourseAggregate(userId, courseId)
     .then((response) => {
