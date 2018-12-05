@@ -69,7 +69,7 @@ describe('New Session Form', () => {
   describe('when number input is changed', () => {
     beforeEach(() => {
       shallowComponent.find(Input).get(0).props.onChange({ target: { value: '0' }});
-      // TODO: should be done properly like ->
+      // TODO: Find a way to test by simulating change event
       //shallowComponent.find(Input).get(0).simulate('change', { target: { value: 'easy' }});
     });
 
@@ -82,8 +82,6 @@ describe('New Session Form', () => {
   describe('when number input is changed with undefined', () => {
     beforeEach(() => {
       shallowComponent.find(Input).get(0).props.onChange({ target: { value: undefined }});
-      // TODO: should be done properly like ->
-      //shallowComponent.find(Input).get(0).simulate('change', { target: { value: 'easy' }});
     });
 
     it('should call onQuestionsChanged', () => {
@@ -95,8 +93,6 @@ describe('New Session Form', () => {
   describe('when select input is changed', () => {
     beforeEach(() => {
       shallowComponent.find(Input).get(1).props.onChange({ target: { value: 'easy' }});
-      // TODO: should be done properly like ->
-      //shallowComponent.find(Input).get(1).simulate('change', { target: { value: 'easy' }});
     });
 
     it('should call onDifficultyChanged', () => {

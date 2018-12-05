@@ -38,7 +38,7 @@ describe('User reducer', () => {
   it('should return the initial state', () => {
     expect(reducer(undefined, {})).toEqual({
       userId: null,
-    })
+    });
   });
 
   describe('should handle SET_USER', () => {
@@ -67,7 +67,7 @@ describe('User reducer', () => {
           userId: 'user-1',
         });
       });
-    })
+    });
   });
 
   describe('should handle RESET_USER', () => {
@@ -93,7 +93,7 @@ describe('User reducer', () => {
           userId: null,
         });
       });
-    })
+    });
   });
 });
 

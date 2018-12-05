@@ -28,7 +28,7 @@ describe('Common reducer', () => {
   it('should return the initial state', () => {
     expect(reducer(undefined, {})).toEqual({
       activeRequests: 0,
-    })
+    });
   });
 
   describe('should handle START_REQUEST', () => {

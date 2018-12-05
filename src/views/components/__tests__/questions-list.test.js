@@ -108,6 +108,6 @@ describe('Questions List', () => {
 
     it('should not render Button component', () => {
       expect(shallowComponent.find(Button)).toHaveLength(0);
-    })
+    });
   });
 });

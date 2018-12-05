@@ -4,7 +4,7 @@ import MockDate from 'mockdate';
 import * as actions from '../actions';
 import * as operations from '../operations';
 import * as types from '../types';
-import { commonTypes } from '../../common'
+import { commonTypes } from '../../common';
 import reducer from '../reducers';
 import * as openTdbService from '../../../../services/opentdb-service';
 import statsService from '../../../../services/stats-service';
@@ -327,54 +327,54 @@ const mockStore = configureMockStore(middlewares);
 describe('Session operations', () => {
   const results = [
     {
-      category: "General Knowledge",
-      difficulty: "easy",
-      question: "Who...",
-      correct_answer: "False",
+      category: 'General Knowledge',
+      difficulty: 'easy',
+      question: 'Who...',
+      correct_answer: 'False',
       incorrect_answers: [
-        "True"
+        'True'
       ]
     },
     {
-      category: "General Knowledge",
-      difficulty: "easy",
-      question: "Which...",
-      correct_answer: "Rock Band",
+      category: 'General Knowledge',
+      difficulty: 'easy',
+      question: 'Which...',
+      correct_answer: 'Rock Band',
       incorrect_answers: [
-        "Meat Beat Mania",
-        "Guitar Hero Live",
-        "Dance Dance Revolution"
+        'Meat Beat Mania',
+        'Guitar Hero Live',
+        'Dance Dance Revolution'
       ]
     },
   ];
 
   const transformedResults = [
     {
-      category: "General Knowledge",
-      difficulty: "easy",
-      question: "Who...",
-      correct_answer: "False",
+      category: 'General Knowledge',
+      difficulty: 'easy',
+      question: 'Who...',
+      correct_answer: 'False',
       incorrect_answers: [
-        "True"
+        'True'
       ],
-      answers: ["True", "False"],
+      answers: ['True', 'False'],
       id: 'is-a-uuid',
     },
     {
-      category: "General Knowledge",
-      difficulty: "easy",
-      question: "Which...",
-      correct_answer: "Rock Band",
+      category: 'General Knowledge',
+      difficulty: 'easy',
+      question: 'Which...',
+      correct_answer: 'Rock Band',
       incorrect_answers: [
-        "Meat Beat Mania",
-        "Guitar Hero Live",
-        "Dance Dance Revolution"
+        'Meat Beat Mania',
+        'Guitar Hero Live',
+        'Dance Dance Revolution'
       ],
       answers: [
-        "Meat Beat Mania",
-        "Guitar Hero Live",
-        "Dance Dance Revolution",
-        "Rock Band",
+        'Meat Beat Mania',
+        'Guitar Hero Live',
+        'Dance Dance Revolution',
+        'Rock Band',
       ],
       id: 'is-a-uuid',
     },
@@ -458,33 +458,33 @@ describe('Session operations', () => {
     const courseId = staticCourses[0].courseId;
     const questions = [
       {
-        question: "Who...",
-        correct_answer: "False",
-        selected: "True",
+        question: 'Who...',
+        correct_answer: 'False',
+        selected: 'True',
         answers: [
-          "True",
-          "False"
+          'True',
+          'False'
         ]
       },
       {
-        question: "Which...",
-        correct_answer: "Rock Band",
-        selected: "Rock Band",
+        question: 'Which...',
+        correct_answer: 'Rock Band',
+        selected: 'Rock Band',
         answers: [
-          "Meat Beat Mania",
-          "Guitar Hero Live",
-          "Dance Dance Revolution",
-          "Rock Band",
+          'Meat Beat Mania',
+          'Guitar Hero Live',
+          'Dance Dance Revolution',
+          'Rock Band',
         ]
       },
       {
-        question: "Where...",
-        correct_answer: "1",
+        question: 'Where...',
+        correct_answer: '1',
         answers: [
-          "5",
-          "18",
-          "24",
-          "1",
+          '5',
+          '18',
+          '24',
+          '1',
         ]
       },
     ];

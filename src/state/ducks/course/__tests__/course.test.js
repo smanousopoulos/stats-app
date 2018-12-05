@@ -3,7 +3,7 @@ import thunk from 'redux-thunk';
 import * as actions from '../actions';
 import * as operations from '../operations';
 import * as types from '../types';
-import { commonTypes } from '../../common'
+import { commonTypes } from '../../common';
 import reducer from '../reducers';
 import statsService from '../../../../services/stats-service';
 import { default as staticCourses } from '../../../../data/courses';
