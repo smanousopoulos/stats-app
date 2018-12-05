@@ -22,7 +22,8 @@ class InProgressPage extends React.Component {
     const { questionsNumber, difficulty, match } = this.props;
     const courseId = match.params.courseId;
 
-    this.props.actions.fetchQuestions(courseId, questionsNumber, difficulty);
+    this.props.actions.fetchQuestions(courseId, questionsNumber, difficulty)
+      .then(() => this.props.actions.startSessionTimer());
   }
 
   render() {
@@ -52,6 +53,7 @@ const mapDispatchToProps = (dispatch) => {
       sendAnswers: sessionOperations.sendAnswers,
       updateQuestion: sessionActions.updateQuestion,
       resetSession: sessionActions.resetSession,
+      startSessionTimer: sessionActions.startSessionTimer,
     }, dispatch),
   };
 };

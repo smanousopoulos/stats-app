@@ -47,6 +47,10 @@ const resetSession = () => ({
   type: types.RESET_SESSION,
 });
 
+const startSessionTimer = () => ({
+  type: types.START_SESSION_TIMER,
+});
+
 export {
   setQuestionsNumber,
   setDifficultyLevel,
@@ -55,4 +59,5 @@ export {
   setTimeElapsed,
   setAverageScore,
   resetSession,
+  startSessionTimer,
 };

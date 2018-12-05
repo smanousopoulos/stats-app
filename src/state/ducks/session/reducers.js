@@ -5,7 +5,7 @@ const initialState = {
   difficulty: 'easy',
   questions: [],
   score: 0,
-  timeElapsed: 0,
+  timeStarted: null,
 };
 
 const sessionReducer = (state = initialState, action) => {
@@ -37,8 +37,16 @@ const sessionReducer = (state = initialState, action) => {
         }) : question),
       };
 
+    case types.START_SESSION_TIMER:
+      return {
+        ...state,
+        timeStarted: new Date().getTime()
+      };
+
+
     case types.RESET_SESSION:
       return initialState;
+
 
     default:
       return state;

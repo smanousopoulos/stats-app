@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ListGroup, ListGroupItem } from 'reactstrap';
+import { timeConversion } from '../utils/time-utils';
 
 const CourseAggregateDisplay = (props) => {
   const { values } = props;
@@ -15,7 +16,7 @@ const CourseAggregateDisplay = (props) => {
           <b>Average score:</b> { values.averageScore }
         </ListGroupItem>
         <ListGroupItem>
-          <b>Time spent:</b> { values.timeStudied }
+          <b>Time spent:</b> { timeConversion(values.timeStudied) }
         </ListGroupItem>
       </ListGroup>
     </div>

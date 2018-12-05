@@ -1,5 +1,6 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import MockDate from 'mockdate';
 import * as actions from '../actions';
 import * as operations from '../operations';
 import * as types from '../types';
@@ -108,6 +109,16 @@ describe('Session actions', () => {
       expect(actions.resetSession()).toEqual(expectedAction);
     });
   });
+
+  describe('Start session timer', () => {
+    const expectedAction = {
+      type: types.START_SESSION_TIMER,
+    };
+
+    it('should create an action that initialises session start time', () => {
+      expect(actions.startSessionTimer()).toEqual(expectedAction);
+    });
+  });
 });
 
 describe('Session reducer', () => {
@@ -116,7 +127,7 @@ describe('Session reducer', () => {
     difficulty: 'easy',
     questions: [],
     score: 0,
-    timeElapsed: 0,
+    timeStarted: null,
   };
 
   it('should return the initial state', () => {
@@ -275,7 +286,6 @@ describe('Session reducer', () => {
     const initialState = {
       questionsNumber: 0,
       difficulty: 'any',
-      timeElapsed: 55,
     };
 
     it('should reset the session', () => {
@@ -284,7 +294,27 @@ describe('Session reducer', () => {
         difficulty: 'easy',
         questions: [],
         score: 0,
-        timeElapsed: 0,
+        timeStarted: null,
+      });
+    });
+  });
+
+  describe('when handling START_SESSION_TIMER', () => {
+    const startSessionTimerAction = {
+      type: types.START_SESSION_TIMER,
+    };
+
+    const initialState = {
+      questionsNumber: 0,
+      difficulty: 'any',
+      timeStarted: null,
+    };
+
+    it('should set session time started to now', () => {
+      const now = new Date().getTime();
+      expect(reducer(initialState, startSessionTimerAction)).toEqual({
+        ...initialState,
+        timeStarted: now,
       });
     });
   });
@@ -424,7 +454,7 @@ describe('Session operations', () => {
     });
   });
 
-  describe('Submit answers', () => {
+  describe('Send answers', () => {
     const courseId = staticCourses[0].courseId;
     const questions = [
       {
@@ -460,16 +490,23 @@ describe('Session operations', () => {
     ];
 
     describe('when stats service POST to /courses/{courseId} responds as expected', () => {
-      const expectedSessionStats = {
-        sessionId: 'is-a-uuid',
-        totalModulesStudied: 2,
-        averageScore: 1 / 2,
-        timeStudied: 1000,
-      };
 
       beforeAll(() => {
         statsService.updateSession.mockImplementation(() => Promise.resolve(results));
       });
+
+      afterAll(() => {
+        MockDate.reset();
+      });
+
+      MockDate.set('1987-01-01T00:00:00');
+
+      const expectedSessionStats = {
+        sessionId: 'is-a-uuid',
+        totalModulesStudied: 2,
+        averageScore: 1 / 2,
+        timeStudied: 2000,
+      };
 
       const userId = 'user-id';
       const category = '2';
@@ -479,6 +516,7 @@ describe('Session operations', () => {
           questionsNumber: 3,
           difficulty: 'hard',
           questions,
+          timeStarted: new Date().getTime(),
         },
         user: {
           userId,
@@ -489,6 +527,7 @@ describe('Session operations', () => {
       });
 
       beforeEach(() => {
+        MockDate.set('1987-01-01T00:00:02'); // 2 seconds later
         return store.dispatch(operations.sendAnswers(courseId));
       });
 

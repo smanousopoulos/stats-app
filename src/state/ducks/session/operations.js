@@ -39,7 +39,7 @@ const fetchQuestions = (courseId) => (dispatch, getState) => {
 
 const sendAnswers = (courseId) => (dispatch, getState) => {
   const { user, session } = getState();
-  const { questions } = session;
+  const { questions, timeStarted } = session;
   const { userId } = user;
 
   const totalScore = questions.reduce((acc, question) => {
@@ -49,11 +49,12 @@ const sendAnswers = (courseId) => (dispatch, getState) => {
     return question.selected ? acc + 1 : acc;
   }, 0);
   const averageScore = totalScore / totalModulesStudied;
+  const now = new Date().getTime();
   const sessionStats = {
     sessionId: uuidv4(),
     totalModulesStudied,
     averageScore: averageScore,
-    timeStudied: 1000, // TODO: calculate time elapsed
+    timeStudied: now - timeStarted,
   };
 
   dispatch(commonActions.startRequest());

@@ -2,6 +2,11 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { ListGroup, ListGroupItem } from 'reactstrap';
 import CourseAggregateDisplay from '../course-aggregate';
+import { timeConversion } from '../../utils/time-utils';
+
+jest.mock('../../utils/time-utils', () => ({
+  timeConversion: jest.fn((val) => val),
+}));
 
 describe('Course aggregate', () => {
   let shallowComponent;
@@ -60,9 +65,11 @@ describe('Course aggregate', () => {
       expect(shallowComponent.find(ListGroupItem).get(1).props.children).toContain(values.averageScore);
     });
 
-    it('should thirdly render list group item with time studied', () => {
+    it('should thirdly render list group item with formatted time studied', () => {
       expect(shallowComponent.find(ListGroupItem).get(2).props.children[0]).toEqual(<b>Time spent:</b>);
       expect(shallowComponent.find(ListGroupItem).get(2).props.children).toContain(values.timeStudied);
+      expect(timeConversion).toHaveBeenCalledTimes(1);
+      expect(timeConversion).toHaveBeenCalledWith(values.timeStudied);
     });
   });
 });

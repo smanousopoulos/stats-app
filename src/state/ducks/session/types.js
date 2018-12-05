@@ -5,6 +5,7 @@ const UPDATE_QUESTION = 'stats/session/UPDATE_QUESTION';
 const SET_TIME_ELAPSED = 'stats/session/SET_TIME_ELAPSED';
 const SET_AVERAGE_SCORE = 'stats/session/SET_AVERAGE_SCORE';
 const RESET_SESSION = 'stats/session/RESET_SESSION';
+const START_SESSION_TIMER = 'stats/session/START_SESSION_TIMER';
 
 export {
   SET_QUESTIONS_NUMBER,
@@ -14,4 +15,5 @@ export {
   SET_TIME_ELAPSED,
   SET_AVERAGE_SCORE,
   RESET_SESSION,
+  START_SESSION_TIMER,
 };
