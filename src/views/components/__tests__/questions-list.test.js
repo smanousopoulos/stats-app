@@ -15,7 +15,7 @@ describe('Questions List', () => {
         '11',
         '1',
       ],
-      selected: 0,
+      selected: '11',
     },
     {
       id: 'q2',

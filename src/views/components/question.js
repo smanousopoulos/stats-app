@@ -34,8 +34,9 @@ const Question = (props) => {
 };
 
 Question.propTypes = {
+  id: PropTypes.string.isRequired,
   question: PropTypes.string.isRequired,
-  selected: PropTypes.number,
+  selected: PropTypes.string,
   answers: PropTypes.arrayOf(PropTypes.string).isRequired,
   onSelect: PropTypes.func.isRequired,
 };

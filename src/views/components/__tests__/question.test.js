@@ -12,7 +12,7 @@ describe('Question', () => {
     '11',
     '1',
   ];
-  const selected = 0;
+  const selected = '2';
   const onSelect = jest.fn();
 
   beforeEach(() => {

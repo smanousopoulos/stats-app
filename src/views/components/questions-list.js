@@ -37,7 +37,7 @@ QuestionsList.propTypes = {
       id: PropTypes.string,
       question: PropTypes.string,
       answers: PropTypes.arrayOf(PropTypes.string).isRequired,
-      selected: PropTypes.number,
+      selected: PropTypes.string,
     })).isRequired,
   onQuestionAnswered: PropTypes.func.isRequired,
   onComplete: PropTypes.func.isRequired,
