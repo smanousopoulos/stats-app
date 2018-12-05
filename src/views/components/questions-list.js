@@ -12,6 +12,7 @@ const QuestionsList = (props) => {
           questions.map(question => (
             <Question
               key={question.id}
+              id={question.id}
               question={question.question}
               selected={question.selected}
               answers={question.answers}

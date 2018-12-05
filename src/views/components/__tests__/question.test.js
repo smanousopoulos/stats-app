@@ -5,6 +5,7 @@ import Question from '../question';
 
 describe('Question', () => {
   let shallowComponent;
+  const id = 'q-id';
   const question = 'What is 1+1?';
   const answers = [
     '2',
@@ -17,6 +18,7 @@ describe('Question', () => {
   beforeEach(() => {
     shallowComponent = shallow((
       <Question
+        id={id}
         question={question}
         answers={answers}
         selected={selected}
@@ -48,9 +50,9 @@ describe('Question', () => {
       expect(input.props()).toEqual({
         type: 'radio',
         onChange: expect.any(Function),
-        name: answers[index],
-        value: index,
-        checked: index === selected,
+        name: `${id}-${answers[index]}`,
+        value: answers[index],
+        checked: answers[index] === selected,
       });
     });
   });

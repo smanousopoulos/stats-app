@@ -49,6 +49,7 @@ describe('Questions List', () => {
       expect(question.prop('answers')).toEqual(questions[index].answers);
       expect(question.prop('question')).toEqual(questions[index].question);
       expect(question.prop('selected')).toEqual(questions[index].selected);
+      expect(question.prop('id')).toEqual(questions[index].id);
     });
   });
 
