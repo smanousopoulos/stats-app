@@ -18,7 +18,7 @@ const NewSessionForm = (props) => {
           id="questions"
           placeholder="Number of questions"
           value={questions}
-          onChange={(e) => { onQuestionsChanged(e.target.value); }}
+          onChange={(e) => { onQuestionsChanged(e.target.value || 0); }}
         />
       </FormGroup>
 

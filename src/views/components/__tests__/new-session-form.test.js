@@ -28,11 +28,6 @@ describe('New Session Form', () => {
   it('should render Form with new-session-form classname', () => {
     expect(shallowComponent.find(Form).prop('className')).toEqual('new-session-form');
   });
-/*
-  it('should render a form group for questions', () => {
-    expect(shallowComponent.find(FormGroup)).toHaveLength(2);
-    expect(shallowComponent.find(FormGroup).get(0).props.children[0]).toContain('Question');
-  });*/
 
   it('should render number input for questions', () => {
     expect(shallowComponent.find(Input).get(0).props).toMatchObject({
@@ -81,6 +76,19 @@ describe('New Session Form', () => {
     it('should call onQuestionsChanged', () => {
       expect(onQuestionsChanged).toHaveBeenCalledTimes(1);
       expect(onQuestionsChanged).toHaveBeenCalledWith('0');
+    });
+  });
+
+  describe('when number input is changed with undefined', () => {
+    beforeEach(() => {
+      shallowComponent.find(Input).get(0).props.onChange({ target: { value: undefined }});
+      // TODO: should be done properly like ->
+      //shallowComponent.find(Input).get(0).simulate('change', { target: { value: 'easy' }});
+    });
+
+    it('should call onQuestionsChanged', () => {
+      expect(onQuestionsChanged).toHaveBeenCalledTimes(1);
+      expect(onQuestionsChanged).toHaveBeenCalledWith(0);
     });
   });
 
