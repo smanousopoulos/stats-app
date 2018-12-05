@@ -10,9 +10,6 @@ const setUserInitial = () => (dispatch, getState) => {
   }
 };
 
-const resetUser = actions.resetUser;
-
 export {
   setUserInitial,
-  resetUser,
 };
