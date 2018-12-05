@@ -21,12 +21,16 @@ const QuestionsList = (props) => {
           ))
         }
       </div>
-      <Button
-        color="primary"
-        onClick={() => onComplete()}
-      >
-        Submit
-      </Button>
+      {
+        questions && questions.length > 0 && (
+          <Button
+            color="primary"
+            onClick={() => onComplete()}
+          >
+            Submit
+          </Button>
+        )
+      }
     </div>
   );
 };
