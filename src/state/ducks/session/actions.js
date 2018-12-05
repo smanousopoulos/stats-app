@@ -21,11 +21,11 @@ const setQuestions = (questions) => ({
   },
 });
 
-const updateQuestion = (id, answerIndex) => ({
+const updateQuestion = (id, answer) => ({
   type: types.UPDATE_QUESTION,
   payload: {
     id,
-    answerIndex,
+    answer,
   },
 });
 

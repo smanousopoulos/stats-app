@@ -1,7 +1,7 @@
 import * as types from './types';
 
 const initialState = {
-  questionsNumber: 0,
+  questionsNumber: 10,
   difficulty: 'easy',
   questions: [],
   score: 0,
@@ -13,7 +13,7 @@ const sessionReducer = (state = initialState, action) => {
     case types.SET_QUESTIONS_NUMBER:
       return {
         ...state,
-        questionsNumber: action.payload.questionsNumber,
+        questionsNumber: Number.parseInt(action.payload.questionsNumber),
       };
 
     case types.SET_DIFFICULTY:
@@ -33,20 +33,8 @@ const sessionReducer = (state = initialState, action) => {
         ...state,
         questions: state.questions.map(question => question.id === action.payload.id ? ({
           ...question,
-          selected: action.payload.answerIndex,
+          selected: action.payload.answer,
         }) : question),
-      };
-
-    case types.SET_TIME_ELAPSED:
-      return {
-        ...state,
-        timeElapsed: action.payload.time,
-      };
-
-    case types.SET_AVERAGE_SCORE:
-      return {
-        ...state,
-        score: action.payload.score,
       };
 
     case types.RESET_SESSION:

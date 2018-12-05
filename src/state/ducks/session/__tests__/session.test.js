@@ -1,11 +1,20 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import fetchMock from 'fetch-mock';
 import * as actions from '../actions';
 import * as operations from '../operations';
 import * as types from '../types';
+import { commonTypes } from '../../common'
 import reducer from '../reducers';
-import uuidv4 from "uuid/v4";
+import * as openTdbService from '../../../../services/opentdb-service';
+import statsService from '../../../../services/stats-service';
+
+jest.mock('uuid/v4', () => () => 'is-a-uuid');
+jest.mock('../../../../services/stats-service', () => ({
+  updateSession: jest.fn(),
+}));
+jest.mock('../../../../services/opentdb-service', () => ({
+  fetchQuestions: jest.fn(),
+}));
 
 const dummyQuestions = [
   {
@@ -74,46 +83,18 @@ describe('Session actions', () => {
 
   describe('Update question', () => {
     const id = '1';
-    const answerIndex = 4;
+    const answer = 4;
 
     const expectedAction = {
       type: types.UPDATE_QUESTION,
       payload: {
         id,
-        answerIndex,
+        answer,
       }
     };
 
     it('should create an action to set the questions', () => {
-      expect(actions.updateQuestion(id, answerIndex)).toEqual(expectedAction);
-    });
-  });
-
-  describe('Set time elapsed', () => {
-    const time = 5000;
-    const expectedAction = {
-      type: types.SET_TIME_ELAPSED,
-      payload: {
-        time,
-      }
-    };
-
-    it('should create an action to set the questions', () => {
-      expect(actions.setTimeElapsed(time)).toEqual(expectedAction);
-    });
-  });
-
-  describe('Set average score', () => {
-    const score = 5.2;
-    const expectedAction = {
-      type: types.SET_AVERAGE_SCORE,
-      payload: {
-        score,
-      }
-    };
-
-    it('should create an action to set the questions', () => {
-      expect(actions.setAverageScore(score)).toEqual(expectedAction);
+      expect(actions.updateQuestion(id, answer)).toEqual(expectedAction);
     });
   });
 
@@ -130,7 +111,7 @@ describe('Session actions', () => {
 
 describe('Session reducer', () => {
   const initialState = {
-    questionsNumber: 0,
+    questionsNumber: 10,
     difficulty: 'easy',
     questions: [],
     score: 0,
@@ -145,7 +126,7 @@ describe('Session reducer', () => {
     const seQuestionsNumberAction = {
       type: types.SET_QUESTIONS_NUMBER,
       payload: {
-        questionsNumber: 5,
+        questionsNumber: '5',
       }
     };
 
@@ -213,13 +194,13 @@ describe('Session reducer', () => {
 
     describe('and question id is not found', () => {
       const id = 'id-55';
-      const answerIndex = 3;
+      const answer = 'answer-55';
 
       const updateQuestionAction = {
         type: types.UPDATE_QUESTION,
         payload: {
           id,
-          answerIndex,
+          answer,
         }
       };
 
@@ -232,13 +213,13 @@ describe('Session reducer', () => {
 
     describe('and question has current selected value', () => {
       const id = 'id-2';
-      const answerIndex = 3;
+      const answer = 'new-answer';
 
       const updateQuestionAction = {
         type: types.UPDATE_QUESTION,
         payload: {
           id,
-          answerIndex,
+          answer,
         }
       };
 
@@ -249,7 +230,7 @@ describe('Session reducer', () => {
         expect(newState.questions[2]).toEqual(dummyQuestions[2]);
 
         const { selected, id, question, answers, correct } = newState.questions[1];
-        expect(selected).toEqual(3);
+        expect(selected).toEqual(answer);
         expect(id).toEqual(dummyQuestions[1].id);
         expect(question).toEqual(dummyQuestions[1].question);
         expect(answers).toEqual(dummyQuestions[1].answers);
@@ -259,13 +240,13 @@ describe('Session reducer', () => {
 
     describe('and question has selected value', () => {
       const id = 'id-3';
-      const answerIndex = 1;
+      const answer = 'new-answer';
 
       const updateQuestionAction = {
         type: types.UPDATE_QUESTION,
         payload: {
           id,
-          answerIndex,
+          answer,
         }
       };
 
@@ -276,58 +257,11 @@ describe('Session reducer', () => {
         expect(newState.questions[1]).toEqual(dummyQuestions[1]);
 
         const { selected, id, question, answers, correct } = newState.questions[2];
-        expect(selected).toEqual(1);
+        expect(selected).toEqual(answer);
         expect(id).toEqual(dummyQuestions[2].id);
         expect(question).toEqual(dummyQuestions[2].question);
         expect(answers).toEqual(dummyQuestions[2].answers);
         expect(correct).toEqual(dummyQuestions[2].correct);
-      });
-    });
-  });
-
-  describe('when handling SET_TIME_ELAPSED', () => {
-    const time = 5000;
-    const setTimeElapsedAction = {
-      type: types.SET_TIME_ELAPSED,
-      payload: {
-        time,
-      }
-    };
-
-    const initialState = {
-      questionsNumber: 0,
-      difficulty: 'any',
-      timeElapsed: 10,
-    };
-
-    it('should update elapsed time', () => {
-      expect(reducer(initialState, setTimeElapsedAction)).toEqual({
-        questionsNumber: 0,
-        difficulty: 'any',
-        timeElapsed: 5000,
-      });
-    });
-  });
-
-  describe('when handling SET_AVERAGE_SCORE', () => {
-    const score = 4.5;
-    const setAverageScoreAction = {
-      type: types.SET_AVERAGE_SCORE,
-      payload: {
-        score,
-      }
-    };
-
-    const initialState = {
-      questionsNumber: 0,
-      difficulty: 'any',
-    };
-
-    it('should update elapsed time', () => {
-      expect(reducer(initialState, setAverageScoreAction)).toEqual({
-        questionsNumber: 0,
-        difficulty: 'any',
-        score,
       });
     });
   });
@@ -345,7 +279,7 @@ describe('Session reducer', () => {
 
     it('should reset the session', () => {
       expect(reducer(initialState, resetSessionAction)).toEqual({
-        questionsNumber: 0,
+        questionsNumber: 10,
         difficulty: 'easy',
         questions: [],
         score: 0,
@@ -360,43 +294,66 @@ const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);
 
 describe('Session operations', () => {
+  const results = [
+    {
+      category: "General Knowledge",
+      difficulty: "easy",
+      question: "Who...",
+      correct_answer: "False",
+      incorrect_answers: [
+        "True"
+      ]
+    },
+    {
+      category: "General Knowledge",
+      difficulty: "easy",
+      question: "Which...",
+      correct_answer: "Rock Band",
+      incorrect_answers: [
+        "Meat Beat Mania",
+        "Guitar Hero Live",
+        "Dance Dance Revolution"
+      ]
+    },
+  ];
+
+  const transformedResults = [
+    {
+      category: "General Knowledge",
+      difficulty: "easy",
+      question: "Who...",
+      correct_answer: "False",
+      incorrect_answers: [
+        "True"
+      ],
+      answers: ["True", "False"],
+      id: 'is-a-uuid',
+    },
+    {
+      category: "General Knowledge",
+      difficulty: "easy",
+      question: "Which...",
+      correct_answer: "Rock Band",
+      incorrect_answers: [
+        "Meat Beat Mania",
+        "Guitar Hero Live",
+        "Dance Dance Revolution"
+      ],
+      answers: [
+        "Meat Beat Mania",
+        "Guitar Hero Live",
+        "Dance Dance Revolution",
+        "Rock Band",
+      ],
+      id: 'is-a-uuid',
+    },
+  ];
+
   describe('Fetch questions', () => {
     describe('when opentdb service responds as expected', () => {
-      const results = [
-        {
-          category: "General Knowledge",
-          difficulty: "easy",
-          question: "Who...",
-          correct_answer: "False",
-          incorrect_answers: [
-            "True"
-          ]
-        },
-        {
-          category: "General Knowledge",
-          difficulty: "easy",
-          question: "Which...",
-          correct_answer: "Rock Band",
-          incorrect_answers: [
-            "Meat Beat Mania",
-            "Guitar Hero Live",
-            "Dance Dance Revolution"
-          ]
-        },
-      ];
 
       beforeEach(() => {
-        fetchMock.getOnce('begin:https://opentdb.com/api.php', {
-          headers: {'content-type': 'application/json'},
-          body: {
-            response_code: 0,
-            results
-          },
-        })
-      });
-
-      afterEach(() => {
-        fetchMock.restore()
+        openTdbService.fetchQuestions.mockImplementation(() => Promise.resolve(({ results })));
       });
 
       const category = '2';
@@ -413,22 +370,26 @@ describe('Session operations', () => {
       });
 
       it('should dispatch SET_QUESTIONS action with fetched questions', () => {
-        expect(store.getActions()).toEqual([{
-          type: types.SET_QUESTIONS,
-          payload: {
-            questions: results
-          }
-        }]);
+        expect(store.getActions()).toEqual([
+          {
+            type: commonTypes.START_REQUEST,
+          },
+          {
+            type: commonTypes.END_REQUEST,
+          },
+          {
+            type: types.SET_QUESTIONS,
+            payload: {
+              questions: transformedResults
+            }
+          },
+        ]);
       });
     });
 
     describe('when opentdb service doesn\'t respond as expected', () => {
       beforeEach(() => {
-        fetchMock.getOnce('begin:https://opentdb.com/api.php', 500);
-      });
-
-      afterEach(() => {
-        fetchMock.restore()
+        openTdbService.fetchQuestions.mockImplementation(() => Promise.reject(({ message: 'Internal server error' })));
       });
 
       const category = '2';
@@ -445,7 +406,100 @@ describe('Session operations', () => {
       });
 
       it('should dispatch SET_QUESTIONS action with fetched questions', () => {
-        expect(store.getActions()).toEqual([]);
+        expect(store.getActions()).toEqual([
+          {
+            type: commonTypes.START_REQUEST,
+          },
+          {
+            type: commonTypes.END_REQUEST,
+          },
+        ]);
+      });
+    });
+  });
+
+  describe('Submit answers', () => {
+    describe('when stats service POST to /courses/{courseId} responds as expected', () => {
+      const questions = [
+        {
+          question: "Who...",
+          correct_answer: "False",
+          selected: "True",
+          answers: [
+            "True",
+            "False"
+          ]
+        },
+        {
+          question: "Which...",
+          correct_answer: "Rock Band",
+          selected: "Rock Band",
+          answers: [
+            "Meat Beat Mania",
+            "Guitar Hero Live",
+            "Dance Dance Revolution",
+            "Rock Band",
+          ]
+        },
+        {
+          question: "Where...",
+          correct_answer: "1",
+          answers: [
+            "5",
+            "18",
+            "24",
+            "1",
+          ]
+        },
+      ];
+
+      const expectedSessionStats = {
+        sessionId: 'is-a-uuid',
+        totalModulesStudied: 2,
+        averageScore: 1 / 2,
+        timeStudied: 1000,
+      };
+
+      beforeAll(() => {
+        statsService.updateSession.mockImplementation(() => Promise.resolve(results));
+      });
+
+      const userId = 'user-id';
+      const courseId = 'is-a-uuid';
+      const category = '2';
+
+      const store = mockStore({
+        session: {
+          questionsNumber: 3,
+          difficulty: 'hard',
+          questions,
+        },
+        user: {
+          userId,
+        },
+        course: {
+          courses: [{ id: category, courseId }]
+        }
+      });
+
+      beforeEach(() => {
+        return store.dispatch(operations.sendAnswers(category));
+      });
+
+      it('should dispatch START AND END REQUEST actions', () => {
+        expect(store.getActions()).toEqual([
+          {
+            type: commonTypes.START_REQUEST,
+          },
+          {
+            type: commonTypes.END_REQUEST,
+          },
+        ]);
+      });
+
+      it('should call stats service with expected gathered statistics', () => {
+        expect(statsService.updateSession).toHaveBeenCalledTimes(1);
+        expect(statsService.updateSession).toHaveBeenCalledWith(userId, courseId, expectedSessionStats);
       });
     });
   });
