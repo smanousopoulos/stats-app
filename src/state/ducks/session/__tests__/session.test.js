@@ -386,7 +386,7 @@ describe('Session operations', () => {
       ];
 
       beforeEach(() => {
-        fetchMock.getOnce('https://opentdb.com/api.php', {
+        fetchMock.getOnce('begin:https://opentdb.com/api.php', {
           headers: {'content-type': 'application/json'},
           body: {
             response_code: 0,
@@ -420,32 +420,32 @@ describe('Session operations', () => {
           }
         }]);
       });
+    });
 
-      describe('when opentdb service doesn\'t respond as expected', () => {
-        beforeEach(() => {
-          fetchMock.getOnce('https://opentdb.com/api.php', 400);
-        });
+    describe('when opentdb service doesn\'t respond as expected', () => {
+      beforeEach(() => {
+        fetchMock.getOnce('begin:https://opentdb.com/api.php', 500);
+      });
 
-        afterEach(() => {
-          fetchMock.restore()
-        });
+      afterEach(() => {
+        fetchMock.restore()
+      });
 
-        const category = '2';
-        const store = mockStore({
-          session: {
-            questionsNumber: 3,
-            difficulty: 'hard',
-            questions: [],
-          }
-        });
+      const category = '2';
+      const store = mockStore({
+        session: {
+          questionsNumber: 3,
+          difficulty: 'hard',
+          questions: [],
+        }
+      });
 
-        beforeEach(() => {
-          return store.dispatch(operations.fetchQuestions(category));
-        });
+      beforeEach(() => {
+        return store.dispatch(operations.fetchQuestions(category));
+      });
 
-        it('should dispatch SET_QUESTIONS action with fetched questions', () => {
-          expect(store.getActions()).toEqual([]);
-        });
+      it('should dispatch SET_QUESTIONS action with fetched questions', () => {
+        expect(store.getActions()).toEqual([]);
       });
     });
   });
