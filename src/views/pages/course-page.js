@@ -17,7 +17,6 @@ class CoursePage extends React.Component {
   }
 
   componentDidMount() {
-    console.log('cmoponent mounted');
     const { actions, match } = this.props;
     const { courseId } = match.params;
     actions.fetchCourseAggregate(courseId);
