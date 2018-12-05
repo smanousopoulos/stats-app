@@ -20,10 +20,15 @@ const courses = [
     name: 'General knowledge',
   },
   {
-    id: '25',
-    courseId: '4cf46d49-aee3-4db3-8092-5a3d8e232883',
-    name: 'Art',
+    id: '17',
+    courseId: 'f9f5faf4-eba9-484f-afc4-fa4bc45a610f',
+    name: 'Science & nature',
   },
+  {
+    id: '21',
+    courseId: 'cf171d4c-a28b-4b8e-9eb5-3096edb1a8d5',
+    name: 'Sports',
+  }
 ];
 
 export default courses;
