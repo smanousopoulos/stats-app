@@ -1,12 +1,12 @@
 import reducer from './reducers';
-import * as sessionOperations from './operations';
-import * as sessionActions from './actions';
-import * as sessionTypes from './types';
+import * as courseOperations from './operations';
+import * as courseActions from './actions';
+import * as courseTypes from './types';
 
 export {
-  sessionOperations,
-  sessionActions,
-  sessionTypes,
+  courseOperations,
+  courseActions,
+  courseTypes,
 };
 
 export default reducer;
