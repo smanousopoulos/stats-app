@@ -12,7 +12,13 @@
     "lint:fix": "eslint . --fix; exit 0",
     "start": "npm run serve:prod",
     "test": "jest .",
+    "coverage": "jest --coverage",
     "webpack-defaults": "webpack-defaults"
+  },
+  "author": "Stelios Manousopoulos",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/smanousopoulos/stats-app.git"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
