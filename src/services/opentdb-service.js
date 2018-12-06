@@ -1,6 +1,5 @@
 import fetch from '../utils/fetch';
-
-const host = 'https://opentdb.com/api.php'; // TODO: extract to config
+import { opentdb as host } from '../../hosts';
 
 const fetchQuestions = (category, amount, difficulty) => {
   const params = {

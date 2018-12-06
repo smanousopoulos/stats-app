@@ -1,6 +1,5 @@
 import fetch from '../utils/fetch';
-
-const host = 'http://localhost:8081';
+import { stats as host } from '../../hosts';
 
 const updateSession = (userId, courseId, session) => {
   const params = {
